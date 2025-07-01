@@ -1,0 +1,14 @@
+[
+    {
+        "name": "Claude",
+        "url": "https://claude.ai",
+        "icon": "fas fa-robot",
+        "description": "AI Assistant by Anthropic"
+    },
+    {
+        "name": "ChatGPT",
+        "url": "https://chat.openai.com",
+        "icon": "fas fa-brain",
+        "description": "AI Chatbot by OpenAI"
+    }
+]

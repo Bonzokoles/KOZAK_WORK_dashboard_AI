@@ -1,4 +1,3 @@
-
 const BACKEND_URL = 'http://localhost:5000';
 let grid;
 
@@ -10,6 +9,35 @@ document.addEventListener('DOMContentLoaded', function() {
 
     loadWidgets();
     setInterval(updateWidgets, 5000);
+    
+    // AI Tool Form Event Listeners
+    const aiToolForm = document.getElementById('ai-tool-form');
+    if (aiToolForm) {
+        aiToolForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const toolId = document.getElementById('tool-id').value;
+            const toolData = {
+                name: document.getElementById('tool-name').value,
+                url: document.getElementById('tool-url').value,
+                icon: document.getElementById('tool-icon').value,
+                description: document.getElementById('tool-description').value
+            };
+
+            if (toolId) {
+                updateAiTool(toolId, toolData);
+            } else {
+                addAiTool(toolData);
+            }
+        });
+    }
+
+    const cancelEditToolBtn = document.getElementById('cancel-edit-tool');
+    if (cancelEditToolBtn) {
+        cancelEditToolBtn.addEventListener('click', () => {
+            document.getElementById('ai-tool-form').reset();
+            document.getElementById('tool-id').value = '';
+        });
+    }
 
     // AI Chat configuration
     const aiChatHeader = document.querySelector('.chat-header h6');
@@ -101,6 +129,9 @@ document.addEventListener('DOMContentLoaded', function() {
             window.open('http://localhost:3050', '_blank'); // Open 3D app in new tab
         });
     }
+
+    // Initialize 3D Viewer with delay to ensure DOM is ready
+    setTimeout(init3DViewer, 1000);
 });
 
 const widgets = [
@@ -109,6 +140,7 @@ const widgets = [
     { id: 'network-stats', content: '<h4>Network Stats</h4><div id="network-stats-content"></div>', w: 3, h: 3 },
     { id: 'top-processes', content: '<h4>Top Processes</h4><div id="top-processes-content"></div>', w: 3, h: 5 },
     { id: 'weather', content: '<h4>Weather</h4><div id="weather-content"></div>', w: 2, h: 3 },
+    { id: '3d-viewer', content: '<h4>3D Model Viewer</h4><div id="3d-viewer-content" style="height: 100%;"></div><div class="mt-2"><input type="text" class="form-control" id="3d-model-path" placeholder="Path to .glb model"><button class="btn btn-primary btn-sm mt-2" id="load-3d-model-btn">Load Model</button></div>', w: 6, h: 8 },
 ];
 
 function loadWidgets() {
@@ -258,31 +290,37 @@ function installAiModel(modelName) {
     });
 }
 
-// New: Function to load AI tools dynamically
 function loadAiTools() {
     fetch(`${BACKEND_URL}/api/ai_tools`)
         .then(response => response.json())
         .then(tools => {
-            const aiToolsGrid = document.querySelector('.ai-tools-grid'); // Assuming this element exists in dashboard.html
-            if (!aiToolsGrid) return;
+            const aiToolsList = document.getElementById('ai-tools-list');
+            if (!aiToolsList) return;
 
-            aiToolsGrid.innerHTML = ''; // Clear existing tools
+            aiToolsList.innerHTML = ''; // Clear existing tools
 
             tools.forEach((tool, index) => {
-                const toolCard = document.createElement('div');
-                toolCard.classList.add('ai-tool-card');
-                toolCard.innerHTML = `
-                    <i class="fas ${tool.icon}"></i>
-                    <h6>${tool.name}</h6>
-                    <p>${tool.description || ''}</p>
-                    <button class="btn btn-primary btn-sm launch-ai-tool" data-url="${tool.url}">Launch</button>
-                    <button class="btn btn-info btn-sm edit-ai-tool" data-id="${index}">Edit</button>
-                    <button class="btn btn-danger btn-sm delete-ai-tool" data-id="${index}">Delete</button>
+                const toolItem = document.createElement('div');
+                toolItem.classList.add('d-flex', 'justify-content-between', 'align-items-center', 'mb-2');
+                toolItem.innerHTML = `
+                    <span><i class="${tool.icon} me-2"></i>${tool.name}</span>
+                    <div>
+                        <button class="btn btn-primary btn-sm me-1 launch-ai-tool" data-url="${tool.url}">Launch</button>
+                        <button class="btn btn-info btn-sm me-1 edit-ai-tool" data-id="${index}">Edit</button>
+                        <button class="btn btn-danger btn-sm delete-ai-tool" data-id="${index}">Delete</button>
+                    </div>
                 `;
-                aiToolsGrid.appendChild(toolCard);
+                aiToolsList.appendChild(toolItem);
             });
+            
+            // Add event listener for "Add New Tool" button
+            const addToolButton = document.createElement('button');
+            addToolButton.classList.add('btn', 'btn-success', 'btn-sm', 'mt-3');
+            addToolButton.textContent = 'Add New Tool';
+            addToolButton.addEventListener('click', () => showAddEditToolDialog());
+            aiToolsList.appendChild(addToolButton);
 
-            // Add event listeners for dynamically created buttons
+            // Attach event listeners to dynamically created buttons
             document.querySelectorAll('.launch-ai-tool').forEach(button => {
                 button.addEventListener('click', function() {
                     window.open(this.dataset.url, '_blank');
@@ -291,8 +329,13 @@ function loadAiTools() {
 
             document.querySelectorAll('.edit-ai-tool').forEach(button => {
                 button.addEventListener('click', function() {
-                    // Implement edit logic (e.g., open a modal with tool details)
-                    alert('Edit tool with ID: ' + this.dataset.id);
+                    const toolId = this.dataset.id;
+                    fetch(`${BACKEND_URL}/api/ai_tools`)
+                        .then(res => res.json())
+                        .then(allTools => {
+                            const tool = allTools[toolId];
+                            showAddEditToolDialog(tool, toolId);
+                        });
                 });
             });
 
@@ -301,53 +344,90 @@ function loadAiTools() {
                     deleteAiTool(this.dataset.id);
                 });
             });
-
-            // Add "Add New Tool" button
-            const addToolCard = document.createElement('div');
-            addToolCard.classList.add('ai-tool-card');
-            addToolCard.innerHTML = `
-                <i class="fas fa-plus"></i>
-                <h6>Add New Tool</h6>
-                <p>Add a custom AI tool</p>
-                <button class="btn btn-success btn-sm" id="add-new-ai-tool-btn">Add</button>
-            `;
-            aiToolsGrid.appendChild(addToolCard);
-
-            document.getElementById('add-new-ai-tool-btn')?.addEventListener('click', showAddToolDialog);
         })
         .catch(error => {
             console.error('Error loading AI tools:', error);
+            alert('Could not load AI tools. Check server logs.');
         });
 }
 
-// Placeholder for showAddToolDialog (from previous steps, needs to be moved/adapted)
-function showAddToolDialog() {
-    alert('Implement add new AI tool dialog');
-    // This function needs to be properly implemented to show a modal for adding new tools
-    // and then call addAiTool(toolData)
-}
-
-// Placeholder for addAiTool
-function addAiTool(toolData) {
-    fetch(`${BACKEND_URL}/api/ai_tools`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(toolData)
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            alert('AI tool added successfully!');
-            loadAiTools(); // Refresh list
-        } else {
-            alert('Error adding AI tool: ' + (data.error || 'Unknown error'));
-        }
+function showAddEditToolDialog(tool = null, toolId = null) {
+    // Create modal dialog
+    const modal = document.createElement('div');
+    modal.classList.add('modal', 'fade');
+    modal.id = 'aiToolDialog';
+    modal.innerHTML = `
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">${tool ? 'Edit' : 'Add'} AI Tool</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="aiToolForm">
+                        <div class="mb-3">
+                            <label for="toolName" class="form-label">Tool Name</label>
+                            <input type="text" class="form-control" id="toolName" value="${tool?.name || ''}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="toolIcon" class="form-label">Icon Class</label>
+                            <input type="text" class="form-control" id="toolIcon" value="${tool?.icon || ''}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="toolUrl" class="form-label">URL</label>
+                            <input type="url" class="form-control" id="toolUrl" value="${tool?.url || ''}" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="saveToolBtn">Save</button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.body.appendChild(modal);
+    
+    // Initialize Bootstrap modal
+    const modalInstance = new bootstrap.Modal(modal);
+    modalInstance.show();
+    
+    // Handle save button click
+    document.getElementById('saveToolBtn').addEventListener('click', () => {
+        const toolData = {
+            name: document.getElementById('toolName').value,
+            icon: document.getElementById('toolIcon').value,
+            url: document.getElementById('toolUrl').value
+        };
+        
+        const method = toolId ? 'PUT' : 'POST';
+        const url = toolId ? `${BACKEND_URL}/api/ai_tools/${toolId}` : `${BACKEND_URL}/api/ai_tools`;
+        
+        fetch(url, {
+            method,
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(toolData)
+        })
+        .then(response => response.json())
+        .then(() => {
+            modalInstance.hide();
+            loadAiTools(); // Refresh the list
+        })
+        .catch(error => {
+            console.error('Error saving tool:', error);
+            alert('Failed to save tool');
+        });
+    });
+    
+    // Remove modal when closed
+    modal.addEventListener('hidden.bs.modal', () => {
+        document.body.removeChild(modal);
     });
 }
 
-// Placeholder for deleteAiTool
 function deleteAiTool(toolId) {
     if (confirm('Are you sure you want to delete this AI tool?')) {
         fetch(`${BACKEND_URL}/api/ai_tools/${toolId}`, {
@@ -365,111 +445,114 @@ function deleteAiTool(toolId) {
     }
 }
 
-const widgets = [
-    { id: 'system-info', content: '<h4>System Info</h4><div id="system-info-content"></div>', w: 2, h: 2 },
-    { id: 'system-resources', content: '<h4>System Resources</h4><div id="system-resources-content"></div>', w: 4, h: 4 },
-    { id: 'network-stats', content: '<h4>Network Stats</h4><div id="network-stats-content"></div>', w: 3, h: 3 },
-    { id: 'top-processes', content: '<h4>Top Processes</h4><div id="top-processes-content"></div>', w: 3, h: 5 },
-    { id: 'weather', content: '<h4>Weather</h4><div id="weather-content"></div>', w: 2, h: 3 },
-];
-
-function loadWidgets() {
-    widgets.forEach(widget => {
-        grid.addWidget({
-            id: widget.id,
-            w: widget.w,
-            h: widget.h,
-            content: `<div class="card text-white bg-dark h-100"><div class="card-body">${widget.content}</div></div>`
-        });
+function updateAiTool(toolId, toolData) {
+    fetch(`${BACKEND_URL}/api/ai_tools/${toolId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(toolData)
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('AI tool updated successfully!');
+            loadAiTools(); // Refresh list
+            document.getElementById('ai-tool-form').reset(); // Clear form
+            document.getElementById('tool-id').value = ''; // Clear hidden ID
+        } else {
+            alert('Error updating AI tool: ' + (data.error || 'Unknown error'));
+        }
+    })
+    .catch(error => {
+        console.error('Error updating AI tool:', error);
+        alert('Error updating AI tool. Check server logs.');
     });
 }
 
-function updateWidgets() {
-    updateSystemInfo();
-    updateSystemResources();
-    updateNetworkStats();
-    updateTopProcesses();
-    updateWeather();
-}
+function init3DViewer() {
+    const container = document.getElementById('3d-viewer-content');
+    if (!container) return;
 
-function updateSystemInfo() {
-    fetch(`${BACKEND_URL}/api/system/info`)
-        .then(response => response.json())
-        .then(data => {
-            const content = `
-                <p><strong>Hostname:</strong> ${data.hostname}</p>
-                <p><strong>OS:</strong> ${data.os}</p>
-                <p><strong>Uptime:</strong> ${new Date(data.uptime * 1000).toISOString().substr(11, 8)}</p>
-            `;
-            document.getElementById('system-info-content').innerHTML = content;
-        });
-}
+    // Basic Three.js setup
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    container.appendChild(renderer.domElement);
 
-function updateSystemResources() {
-    fetch(`${BACKEND_URL}/api/system/resources`)
-        .then(response => response.json())
-        .then(data => {
-            const content = `
-                <p><strong>CPU:</strong> ${data.cpu_percent.toFixed(1)}%</p>
-                <div class="progress mb-2">
-                    <div class="progress-bar" role="progressbar" style="width: ${data.cpu_percent}%" aria-valuenow="${data.cpu_percent}" aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-                <p><strong>RAM:</strong> ${data.memory_percent.toFixed(1)}%</p>
-                <div class="progress mb-2">
-                    <div class="progress-bar" role="progressbar" style="width: ${data.memory_percent}%" aria-valuenow="${data.memory_percent}" aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-                <p><strong>Disk:</strong> ${data.disk_percent.toFixed(1)}%</p>
-                <div class="progress mb-2">
-                    <div class="progress-bar" role="progressbar" style="width: ${data.disk_percent}%" aria-valuenow="${data.disk_percent}" aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-                <p><strong>GPU:</strong> ${data.gpu_usage.toFixed(1)}%</p>
-                <div class="progress">
-                    <div class="progress-bar" role="progressbar" style="width: ${data.gpu_usage}%" aria-valuenow="${data.gpu_usage}" aria-valuemin="0" aria-valuemax="100"></div>
-                </div>
-            `;
-            document.getElementById('system-resources-content').innerHTML = content;
-        });
-}
+    // Add lights
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+    scene.add(ambientLight);
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+    directionalLight.position.set(0, 1, 1);
+    scene.add(directionalLight);
 
-function updateNetworkStats() {
-    fetch(`${BACKEND_URL}/api/network/stats`)
-        .then(response => response.json())
-        .then(data => {
-            const content = `
-                <p><strong>Download:</strong> ${data.download.toFixed(2)} Mbps</p>
-                <p><strong>Upload:</strong> ${data.upload.toFixed(2)} Mbps</p>
-                <p><strong>Ping:</strong> ${data.ping.toFixed(2)} ms</p>
-            `;
-            document.getElementById('network-stats-content').innerHTML = content;
-        });
-}
+    // OrbitControls for interaction
+    const controls = new THREE.OrbitControls(camera, renderer.domElement);
+    camera.position.z = 5;
 
-function updateTopProcesses() {
-    fetch(`${BACKEND_URL}/api/system/processes`)
-        .then(response => response.json())
-        .then(data => {
-            let content = '<ul class="list-group">';
-            data.forEach(p => {
-                content += `<li class="list-group-item d-flex justify-content-between align-items-center">
-                    ${p.name}
-                    <span class="badge bg-primary rounded-pill">${p.cpu_percent.toFixed(1)}%</span>
-                </li>`;
+    let currentModel = null;
+
+    // Function to load GLB model
+    function loadGLBModel(path) {
+        if (currentModel) {
+            scene.remove(currentModel);
+            currentModel.traverse(object => {
+                if (object.isMesh) {
+                    object.geometry.dispose();
+                    if (Array.isArray(object.material)) {
+                        object.material.forEach(material => material.dispose());
+                    } else {
+                        object.material.dispose();
+                    }
+                }
             });
-            content += '</ul>';
-            document.getElementById('top-processes-content').innerHTML = content;
-        });
-}
+        }
 
-function updateWeather() {
-    fetch(`${BACKEND_URL}/api/weather`)
-        .then(response => response.json())
-        .then(data => {
-            const content = `
-                <h5>${data.name}</h5>
-                <p>${data.weather[0].description}</p>
-                <p><strong>Temp:</strong> ${data.main.temp}°C</p>
-                <p><strong>Humidity:</strong> ${data.main.humidity}%</p>
-            `;
-            document.getElementById('weather-content').innerHTML = content;
+        const loader = new THREE.GLTFLoader();
+        loader.load(path, (gltf) => {
+            currentModel = gltf.scene;
+            scene.add(currentModel);
+            // Optional: Fit camera to model
+            const box = new THREE.Box3().setFromObject(currentModel);
+            const center = box.getCenter(new THREE.Vector3());
+            const size = box.getSize(new THREE.Vector3());
+            const maxDim = Math.max(size.x, size.y, size.z);
+            const fov = camera.fov * (Math.PI / 180);
+            let cameraZ = Math.abs(maxDim / 2 / Math.tan(fov / 2));
+            cameraZ *= 1.5; // Add some padding
+            camera.position.set(center.x, center.y, center.z + cameraZ);
+            controls.target.set(center.x, center.y, center.z);
+            controls.update();
+        }, undefined, (error) => {
+            console.error('An error occurred loading the 3D model:', error);
+            alert('Failed to load 3D model. Check console for details.');
         });
+    }
+
+    // Animation loop
+    function animate() {
+        requestAnimationFrame(animate);
+        controls.update();
+        renderer.render(scene, camera);
+    }
+    animate();
+
+    // Handle window resize
+    window.addEventListener('resize', () => {
+        camera.aspect = container.clientWidth / container.clientHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(container.clientWidth, container.clientHeight);
+    });
+
+    // Event listener for load button
+    document.getElementById('load-3d-model-btn')?.addEventListener('click', () => {
+        const modelPath = document.getElementById('3d-model-path').value;
+        if (modelPath) {
+            loadGLBModel(modelPath);
+        } else {
+            alert('Please enter a path to a .glb model file.');
+        }
+    });
 }
