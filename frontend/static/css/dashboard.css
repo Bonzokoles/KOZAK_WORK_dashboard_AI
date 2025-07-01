@@ -1,0 +1,137 @@
+/* Zresetowanie zaokrągleń i inne zmiany stylistyczne */
+:root {
+    --primary-color: #0ff; /* Zmiana na neonowy odcień */
+    --secondary-color: #aaa;
+    --success-color: #0f0;
+    --danger-color: #f00;
+    --dark-bg: #000;
+    --card-bg: rgba(0, 0, 0, 0.9);
+    --card-header-bg: rgba(0, 0, 0, 0.85);
+    --history-item-bg: rgba(0, 0, 0, 0.7);
+    --ai-tool-card-bg: rgba(0, 0, 0, 0.85);
+    --input-bg: rgba(0, 0, 0, 0.9);
+    --text-color: #fff;
+    --highlight-red: #f0f;
+    --highlight-blue: #0ff;
+    --highlight-purple: #f0f;
+    --neon-glow: 0 0 5px rgba(0, 255, 255, 0.7), 0 0 10px rgba(0, 255, 255, 0.5); /* Inny kolor glow */
+    --input-border: #333;
+}
+
+body {
+    background-color: #000;
+    color: var(--text-color);
+    font-family: 'Courier New', monospace; /* Zmiana czcionki */
+    overflow-x: hidden;
+}
+
+/* Usunięcie zaokrągleń */
+.card, .btn, .form-control, .form-select, .history-item {
+    border-radius: 0 !important;
+}
+
+.sidebar {
+    /* ... */
+    border-right: 2px solid var(--highlight-blue); /* Grubsza krawędź */
+    box-shadow: inset -5px 0 15px rgba(0, 0, 0, 0.8); /* Mocniejszy cień */
+}
+
+.sidebar-brand {
+    /* ... */
+    border-bottom: 2px solid rgba(0, 255, 255, 0.5); /* Grubsza krawędź */
+    text-shadow: 0 0 10px var(--highlight-blue);
+}
+
+.sidebar-menu a {
+    /* ... */
+    border-left: 4px solid transparent; /* Grubsza krawędź */
+}
+
+.sidebar-menu a:hover {
+    border-left-color: var(--highlight-blue);
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+}
+
+.sidebar-menu a.active {
+    border-left: 4px solid var(--highlight-blue);
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+}
+
+.navbar {
+    /* ... */
+    border-bottom: 2px solid var(--highlight-blue);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 1); /* Mocniejszy cień */
+}
+
+.card {
+    /* ... */
+    border: 2px solid var(--highlight-blue);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+}
+
+.card:hover {
+    transform: translateY(-7px); /* Większy efekt uniesienia */
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 1), 0 0 0 2px var(--highlight-blue);
+}
+
+.history-item {
+    /* ... */
+    border-left: 4px solid var(--highlight-blue);
+    background-color: rgba(0, 0, 0, 0.8);
+    transition: all 0.2s; /* Szybsze przejście */
+}
+
+.history-item:hover {
+    background-color: rgba(0, 0, 0, 0.95); /* Jeszcze ciemniejsze */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+}
+
+.btn-primary {
+    /* ... */
+    border: 2px solid var(--highlight-blue);
+}
+
+.btn-primary:hover {
+    background-color: #111;
+    border-color: var(--highlight-blue);
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.7);
+}
+
+.progress {
+    /* ... */
+    height: 1rem;
+    box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.8);
+}
+
+.progress-bar {
+    /* ... */
+    background-image: linear-gradient(to right, var(--highlight-blue), #0ff);
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.7);
+}
+
+.progress-bar.bg-success {
+    background-image: linear-gradient(to right, #0f0, #0a0);
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.7);
+}
+
+/* ... i tak dalej dla innych elementów ... */
+
+/* Dodatkowe animacje */
+@keyframes neon-pulse {
+    0% { text-shadow: 0 0 10px var(--highlight-blue); }
+    50% { text-shadow: 0 0 20px var(--highlight-blue); }
+    100% { text-shadow: 0 0 10px var(--highlight-blue); }
+}
+
+.neon-text {
+    animation: neon-pulse 2s infinite;
+}
+
+@keyframes slide-in {
+    from { transform: translateX(-100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+.slide-in {
+    animation: slide-in 0.5s ease-out;
+}

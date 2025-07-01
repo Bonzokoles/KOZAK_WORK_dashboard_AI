@@ -1,0 +1,67 @@
+{
+  "models": [
+    {
+      "id": "base_basic_pbr",
+      "name": "Basic PBR Model",
+      "path": "/static/models/base_basic_pbr.glb",
+      "category": "basic",
+      "description": "Basic PBR (Physically Based Rendering) model",
+      "author": "Bonzokoles",
+      "license": "Custom"
+    },
+    {
+      "id": "base_basic_pbr_1",
+      "name": "Basic PBR Model Variant 1",
+      "path": "/static/models/base_basic_pbr(1).glb",
+      "category": "basic",
+      "description": "Basic PBR model - Variant 1",
+      "author": "Bonzokoles",
+      "license": "Custom"
+    },
+    {
+      "id": "base_basic_pbr_2",
+      "name": "Basic PBR Model Variant 2",
+      "path": "/static/models/base_basic_pbr(2).glb",
+      "category": "basic",
+      "description": "Basic PBR model - Variant 2",
+      "author": "Bonzokoles",
+      "license": "Custom"
+    },
+    {
+      "id": "base_basic_pbr_3",
+      "name": "Basic PBR Model Variant 3",
+      "path": "/static/models/base_basic_pbr(3).glb",
+      "category": "basic",
+      "description": "Basic PBR model - Variant 3",
+      "author": "Bonzokoles",
+      "license": "Custom"
+    },
+    {
+      "id": "base_basic_pbr_4",
+      "name": "Basic PBR Model Variant 4",
+      "path": "/static/models/base_basic_pbr(4).glb",
+      "category": "basic",
+      "description": "Basic PBR model - Variant 4",
+      "author": "Bonzokoles",
+      "license": "Custom"
+    },
+    {
+      "id": "base_basic_pbr_5",
+      "name": "Basic PBR Model Variant 5",
+      "path": "/static/models/base_basic_pbr(5).glb",
+      "category": "basic",
+      "description": "Basic PBR model - Variant 5",
+      "author": "Bonzokoles",
+      "license": "Custom"
+    },
+    {
+      "id": "base_basic_pbr_6",
+      "name": "Basic PBR Model Variant 6",
+      "path": "/static/models/base_basic_pbr(6).glb",
+      "category": "basic",
+      "description": "Basic PBR model - Variant 6",
+      "author": "Bonzokoles",
+      "license": "Custom"
+    }
+  ]
+}

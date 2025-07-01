@@ -1,0 +1,569 @@
+:root {
+    --primary-color: #4e73df; /* Blue */
+    --secondary-color: #858796; /* Gray */
+    --success-color: #1cc88a; /* Green */
+    --info-color: #36b9cc; /* Cyan */
+    --warning-color: #f6c23e; /* Yellow */
+    --danger-color: #e74a3b; /* Red */
+    --dark-color: #5a5c69; /* Dark Gray */
+
+    /* Dark Theme Colors */
+    --background-dark: #1a1a1a;
+    --text-light: #f8f9fc; /* Light Gray */
+    --card-background: #2a2a2a;
+    --card-header-background: #303030;
+    --card-border: #404040;
+    --sidebar-background: linear-gradient(180deg, #2c3e50 0%, #1a252f 100%); /* Darker gradient */
+    --navbar-background: #2a2a2a;
+    --navbar-text: var(--text-light);
+    --dropdown-background: #2a2a2a;
+    --dropdown-text: var(--text-light);
+    --dropdown-divider: #404040;
+    --chat-widget-background: #2a2a2a;
+    --chat-header-background: #34495e; /* Darker blue-gray */
+    --chat-header-text: white;
+    --chat-border: #404040;
+    --input-background: #3a3a3a;
+    --input-text: var(--text-light);
+    --input-border: #505050;
+    --user-message-background: #3498db; /* Brighter blue */
+    --bot-message-background: #7f8c8d; /* Gray */
+    --message-text: white;
+    --progress-bar-bg: #404040; /* Dark background for progress bars */
+}
+
+body {
+    background-color: var(--background-dark);
+    color: var(--text-light);
+    font-family: 'Nunito', sans-serif;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden; /* Prevent horizontal scroll */
+    transition: background-color 0.3s ease; /* Smooth transition for dark mode */
+}
+
+/* Optional: Light mode styles */
+body.light-mode {
+    --background-dark: #f8f9fc;
+    --text-light: #343a40;
+    --card-background: #ffffff;
+    --card-header-background: #f1f1f1;
+    --card-border: #d1d1d1;
+    --sidebar-background: linear-gradient(180deg, var(--primary-color) 0%, #224abe 100%);
+    --navbar-background: #ffffff;
+    --navbar-text: #343a40;
+    --dropdown-background: #ffffff;
+    --dropdown-text: #343a40;
+    --dropdown-divider: #e9ecef;
+    --chat-widget-background: #ffffff;
+    --chat-header-background: var(--primary-color);
+    --chat-header-text: white;
+    --chat-border: #eee;
+    --input-background: #ffffff;
+    --input-text: #343a40;
+    --input-border: #ced4da;
+    --user-message-background: #e9ecef;
+    --bot-message-background: #d4edda;
+    --message-text: #343a40;
+    --progress-bar-bg: #e9ecef;
+}
+
+
+.container-fluid {
+    padding: 0;
+}
+
+.row {
+    margin: 0;
+}
+
+/* Sidebar */
+.sidebar {
+    background: var(--sidebar-background);
+    min-height: 100vh;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 14rem; /* Adjust width as needed */
+    padding: 1rem;
+    color: var(--text-light);
+    z-index: 1000; /* Ensure sidebar is above content */
+    overflow-y: auto; /* Enable scrolling for long menus */
+    transition: width 0.3s ease; /* Smooth transition for collapse */
+}
+
+.sidebar.toggled {
+    width: 5rem; /* Collapsed width */
+}
+
+.sidebar.toggled .sidebar-brand span,
+.sidebar.toggled .sidebar-menu span,
+.sidebar.toggled .nav-category {
+    display: none;
+}
+
+.sidebar.toggled .sidebar-menu a {
+    text-align: center;
+    padding: 0.75rem 0.5rem;
+}
+
+.sidebar-brand {
+    text-align: center;
+    padding: 1.5rem 1rem;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--text-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sidebar-brand i {
+    margin-right: 0.5rem;
+    font-size: 2rem; /* Larger icon */
+}
+
+.sidebar-divider {
+    margin: 0 1rem 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-menu a {
+    display: flex; /* Use flexbox for alignment */
+    align-items: center;
+    padding: 0.75rem 1rem;
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out;
+    border-radius: 0.35rem;
+    margin-bottom: 0.25rem;
+}
+
+.sidebar-menu a:hover {
+    color: var(--text-light);
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-menu a.active {
+    color: var(--text-light);
+    background-color: rgba(255, 255, 255, 0.2);
+    font-weight: bold;
+}
+
+.sidebar-menu a i {
+    margin-right: 0.75rem; /* Increased space */
+    font-size: 1.2rem; /* Slightly larger icons */
+}
+
+.nav-category {
+    padding: 1rem 1rem 0.5rem;
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.5);
+    text-transform: uppercase;
+    white-space: nowrap; /* Prevent wrapping */
+    overflow: hidden;
+    text-overflow: ellipsis; /* Add ellipsis if text is too long */
+}
+
+/* Main Content Area */
+.main-content {
+    margin-left: 14rem; /* Offset for fixed sidebar */
+    padding: 1rem;
+    transition: margin-left 0.3s ease; /* Smooth transition for sidebar collapse */
+}
+
+.main-content.toggled {
+    margin-left: 5rem; /* Adjust margin when sidebar is collapsed */
+}
+
+
+/* Navbar */
+.navbar {
+    background-color: var(--navbar-background);
+    color: var(--navbar-text);
+    padding: 0.5rem 1rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 0.15rem 1.75rem 0 rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: center;
+}
+
+.navbar h1 {
+    color: var(--navbar-text);
+    font-size: 1.25rem; /* Adjust size */
+    margin-bottom: 0;
+}
+
+.navbar .nav-link {
+    color: var(--navbar-text);
+    padding: 0.5rem 1rem;
+}
+
+.navbar .nav-link:hover {
+    color: rgba(255, 255, 255, 0.75);
+}
+
+.navbar .dropdown-menu {
+    background-color: var(--dropdown-background);
+    border: 1px solid var(--card-border);
+}
+
+.navbar .dropdown-item {
+    color: var(--dropdown-text);
+}
+
+.navbar .dropdown-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--text-light);
+}
+
+.navbar .dropdown-divider {
+    border-top: 1px solid var(--dropdown-divider);
+}
+
+.clock-display {
+    font-size: 1rem;
+    font-weight: bold;
+    margin-left: auto; /* Push to the right */
+}
+
+.dark-mode-toggle {
+    cursor: pointer;
+    font-size: 1.2rem;
+}
+
+
+/* Cards */
+.card {
+    background-color: var(--card-background);
+    border: none;
+    border-radius: 0.35rem;
+    box-shadow: 0 0.15rem 1.75rem rgba(0, 0, 0, 0.15);
+    color: var(--text-light);
+    margin-bottom: 1.5rem; /* Add bottom margin */
+}
+
+.card-header {
+    background-color: var(--card-header-background);
+    border-bottom: 1px solid var(--card-border);
+    color: var(--text-light);
+    padding: 0.75rem 1.25rem;
+    margin-bottom: 0;
+    font-weight: bold;
+}
+
+.card-body {
+    padding: 1.25rem;
+}
+
+.card-stat .card-body {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.card-stat .text-xs {
+    font-size: 0.7rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-bottom: 0.25rem;
+    color: rgba(255, 255, 255, 0.6); /* Slightly lighter text */
+}
+
+.card-stat .h5 {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 0;
+}
+
+.card-stat i {
+    color: rgba(255, 255, 255, 0.3);
+}
+
+.card-stat.positive i {
+    color: var(--success-color);
+}
+
+.card-stat.negative i {
+    color: var(--danger-color);
+}
+
+/* Progress Bars */
+.resource-item {
+    margin-bottom: 1rem;
+}
+
+.resource-item .progress {
+    height: 0.75rem;
+    background-color: var(--progress-bar-bg);
+}
+
+.resource-item .progress-bar {
+    transition: width 0.6s ease;
+}
+
+/* Chat Widget */
+.chat-widget {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 300px;
+    height: 400px;
+    background: var(--chat-widget-background);
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    display: flex;
+    flex-direction: column;
+    z-index: 1050; /* Above other elements */
+    overflow: hidden;
+    transition: height 0.3s ease; /* Smooth transition for minimize */
+}
+
+.chat-header {
+    padding: 10px;
+    background: var(--chat-header-background);
+    color: var(--chat-header-text);
+    border-radius: 10px 10px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer; /* Indicate it's collapsible */
+}
+
+.chat-header h6 {
+    margin: 0;
+    color: inherit;
+}
+
+.chat-body {
+    flex-grow: 1;
+    padding: 10px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: all 0.3s ease;
+}
+
+.chat-body.hidden {
+    display: none;
+}
+
+.chat-input {
+    padding: 10px;
+    border-top: 1px solid var(--chat-border);
+    display: flex;
+    gap: 10px;
+    background-color: var(--card-header-background); /* Match card header */
+    transition: all 0.3s ease;
+}
+
+.chat-input.hidden {
+    display: none;
+}
+
+
+.chat-input input {
+    flex-grow: 1;
+    padding: 8px;
+    border: 1px solid var(--input-border);
+    border-radius: 5px;
+    background-color: var(--input-background);
+    color: var(--input-text);
+}
+
+.chat-input input::placeholder {
+    color: #888;
+}
+
+.chat-input button {
+    background-color: var(--primary-color);
+    border: none;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.chat-input button:hover {
+    background-color: #3b5cb8;
+}
+
+.message {
+    padding: 8px 12px;
+    border-radius: 8px;
+    max-width: 80%;
+    word-wrap: break-word;
+}
+
+.user-message {
+    align-self: flex-end;
+    background-color: var(--user-message-background);
+    color: var(--message-text);
+}
+
+.bot-message {
+    align-self: flex-start;
+    background-color: var(--bot-message-background);
+    color: var(--message-text);
+}
+
+/* 3D Visualization container */
+#3d-visualization {
+    width: 100%;
+    height: 400px; /* Fixed height for the canvas */
+    background: #000;
+    border-radius: 5px;
+    margin-bottom: 1.5rem;
+}
+
+/* Weather widget */
+#weather-widget {
+    padding: 15px;
+    text-align: center;
+    background-color: var(--card-background);
+    border-radius: 0.35rem;
+    box-shadow: 0 0.15rem 1.75rem rgba(0, 0, 0, 0.15);
+}
+
+.weather-content img {
+    width: 50px; /* Adjust size as needed */
+    height: 50px;
+}
+
+.temperature {
+    font-size: 2em;
+    font-weight: bold;
+    margin: 5px 0;
+}
+
+.description {
+    font-size: 1em;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.weather-widget .error {
+    color: var(--danger-color);
+    font-weight: bold;
+}
+
+
+/* Animated backgrounds/effects */
+/* Removed the body::before gradient animation to simplify */
+
+.glow-effect {
+    position: relative;
+    overflow: hidden;
+}
+
+/* Add a subtle pulse animation */
+.glow-effect {
+    animation: pulse 2s infinite ease-in-out;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.01); }
+    100% { transform: scale(1); }
+}
+
+
+/* Optional: Add hover effects to cards */
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0.5rem 2rem rgba(0, 0, 0, 0.25);
+    transition: all 0.3s ease-in-out;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .sidebar {
+        position: relative;
+        width: 100%;
+        min-height: auto;
+        height: auto; /* Allow height to adjust */
+        padding: 0; /* Remove padding */
+    }
+     .sidebar.toggled {
+        width: 100%; /* Full width when toggled on small screens */
+     }
+    .sidebar-brand {
+        padding: 1rem; /* Adjust padding */
+    }
+    .sidebar-menu {
+        display: flex; /* Arrange menu items horizontally */
+        flex-wrap: wrap; /* Allow wrapping */
+        justify-content: center; /* Center items */
+        padding: 0 1rem; /* Add horizontal padding */
+    }
+    .sidebar-menu a {
+        flex: 1 1 auto; /* Allow items to grow and shrink */
+        text-align: center;
+        padding: 0.5rem; /* Adjust padding */
+        margin: 0.25rem; /* Add margin between items */
+        justify-content: center; /* Center content in flex item */
+    }
+     .sidebar.toggled .sidebar-menu a {
+         padding: 0.5rem; /* Adjust padding when toggled */
+     }
+    .sidebar-menu a i {
+        margin-right: 0; /* Remove margin on small screens */
+        display: block; /* Stack icon and text */
+        margin-bottom: 0.25rem; /* Add space below icon */
+    }
+    .sidebar-divider {
+        margin: 0.5rem 1rem; /* Adjust margin */
+    }
+    .nav-category {
+        text-align: center;
+        padding: 0.5rem 1rem; /* Adjust padding */
+    }
+
+    .main-content {
+        margin-left: 0;
+        padding-top: 1rem; /* Add padding if navbar is fixed */
+    }
+    .navbar {
+        position: static; /* Make navbar static on small screens */
+        flex-wrap: wrap; /* Allow navbar items to wrap */
+        justify-content: center; /* Center navbar items */
+    }
+    .navbar h1 {
+        width: 100%; /* Full width for title */
+        text-align: center;
+        margin-bottom: 0.5rem;
+    }
+    .navbar .ms-auto {
+        margin-left: 0 !important; /* Override margin-left auto */
+    }
+    .navbar .me-3 {
+        margin-right: 0.5rem !important; /* Adjust margin */
+    }
+    .navbar .ms-3 {
+         margin-left: 0.5rem !important; /* Adjust margin */
+    }
+    .clock-display {
+        font-size: 1rem;
+        font-weight: bold;
+        margin-left: 0; /* Remove auto margin */
+        width: 100%; /* Full width */
+        text-align: center;
+        margin-bottom: 0.5rem;
+    }
+    .navbar-nav {
+        flex-direction: row; /* Arrange nav items horizontally */
+        width: 100%; /* Full width */
+        justify-content: center; /* Center nav items */
+    }
+    .navbar-nav .nav-item {
+        margin: 0 0.5rem; /* Add horizontal margin */
+    }
+
+    .chat-widget {
+        width: 90%; /* Make chat widget wider on small screens */
+        right: 5%; /* Center it */
+        bottom: 10px; /* Adjust bottom position */
+    }
+}

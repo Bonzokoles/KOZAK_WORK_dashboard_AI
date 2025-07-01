@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JIMBO DaShBoArD</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Custom styles -->
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/dashboard.css') }}" rel="stylesheet">
+    <!-- Add Three.js library (from CDN) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.152.0/three.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/gridstack@10.1.2/dist/gridstack.min.css" rel="stylesheet"/>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <nav class="col-md-2 p-0">
+                <div class="sidebar">
+                    <div class="sidebar-brand"><i class="fas fa-brain"></i><span>JIMBO</span></div>
+                    <hr class="sidebar-divider my-0">
+                    <div class="sidebar-menu">
+                        <a href="#" class="active" id="dashboard-link"><i class="fas fa-fw fa-tachometer-alt"></i><span>Panel główny</span></a>
+                        <a href="#" id="analysis-link"><i class="fas fa-fw fa-comment-dots"></i><span>Analiza tekstu</span></a>
+                        <a href="#" id="ai-tools-link"><i class="fas fa-fw fa-robot"></i><span>Narzędzia AI</span></a>
+                        <a href="#" id="3d-app-link"><i class="fas fa-fw fa-cube"></i><span>Aplikacja 3D</span></a>
+                        <a href="#" id="utilities-link"><i class="fas fa-fw fa-toolbox"></i><span>Narzędzia</span></a>
+                        <a href="#" id="browsers-link"><i class="fas fa-fw fa-globe"></i><span>Przeglądarki</span></a>
+                    </div>
+                    <div class="nav-category">Monitoring</div>
+                    <div class="sidebar-menu">
+                        <a href="#" id="system-link"><i class="fas fa-fw fa-desktop"></i><span>Monitor systemu</span></a>
+                        <a href="#" id="network-link"><i class="fas fa-fw fa-network-wired"></i><span>Monitor sieci</span></a>
+                    </div>
+                </div>
+            </nav>
+            <!-- Main Content -->
+            <main class="col-md-10 p-0">
+                <nav class="navbar navbar-expand navbar-dark mb-4 shadow-sm">
+                    <button id="sidebarToggle" class="btn btn-link d-md-none rounded-circle me-3"><i class="fa fa-bars"></i></button>
+                    <h1 class="h5 mb-0 text-white">JIMBO DaShBoArD</h1>
+                    <button class="btn btn-sm btn-outline-light ms-3" id="mega-search-btn" title="Mega Wyszukiwanie"><i class="fab fa-google"></i>+</button>
+                    <div class="clock-display ms-auto me-3" id="clock-display-topbar">00:00:00</div>
+                    <ul class="navbar-nav">
+                        <li class="nav-item dropdown no-arrow me-2">
+                            <span class="nav-link dark-mode-toggle" id="darkModeToggle"><i class="fas fa-moon"></i></span>
+                        </li>
+                        <li class="nav-item dropdown no-arrow">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                                <span class="me-2 d-none d-lg-inline text-gray-200 small">Bonzokoles</span><i class="fas fa-user-circle fa-fw"></i>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-end shadow bg-dark text-white">
+                                <a class="dropdown-item text-light" href="#"><i class="fas fa-user fa-sm fa-fw me-2 text-gray-400"></i> Profil</a>
+                                <a class="dropdown-item text-light" href="#"><i class="fas fa-cogs fa-sm fa-fw me-2 text-gray-400"></i> Ustawienia</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item text-light" href="#"><i class="fas fa-sign-out-alt fa-sm fa-fw me-2 text-gray-400"></i> Wyloguj</a>
+                            </div>
+                        </li>
+                    </ul>
+                </nav>
+                <!-- Dashboard Content -->
+                <div class="grid-stack"></div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Chatbot Widget -->
+    <div class="chat-widget" id="chat-widget">
+        <div class="chat-header">
+            <h6>AI Assistant</h6>
+            <button class="btn btn-sm btn-link text-white" id="minimize-chat">
+                <i class="fas fa-minus"></i>
+            </button>
+        </div>
+        <div class="chat-body" id="chat-messages">
+            <!-- Chat messages will appear here -->
+        </div>
+        <div class="chat-input">
+            <input type="text" id="chat-input" placeholder="Type your message...">
+            <button class="btn btn-primary btn-sm" id="send-message">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+
+    <!-- AI Chat Configuration Modal -->
+    <div class="modal fade" id="aiChatConfigModal" tabindex="-1" aria-labelledby="aiChatConfigModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content bg-dark text-white">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="aiChatConfigModalLabel">AI Chat Configuration</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="ai-model-path" class="form-label">AI Model Path</label>
+                        <input type="text" class="form-control" id="ai-model-path" placeholder="Enter path to AI models folder">
+                    </div>
+                    <div class="mb-3">
+                        <label for="ai-model-select" class="form-label">Select AI Model</label>
+                        <select class="form-select" id="ai-model-select">
+                            <!-- Options will be loaded dynamically from backend -->
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="ai-model-install" class="form-label">Install New Model (Ollama/Local Path)</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="ai-model-install" placeholder="e.g., llama2 or /path/to/model.bin">
+                            <button class="btn btn-outline-secondary" type="button" id="install-model-btn">Install</button>
+                        </div>
+                    </div>
+                    <hr>
+                    <h6>Connect to a service:</h6>
+                    <div class="mb-3">
+                        <label for="ollama-api-key" class="form-label">Ollama API Key</label>
+                        <input type="text" class="form-control" id="ollama-api-key" placeholder="Enter your Ollama API key">
+                    </div>
+                    <div class="mb-3">
+                        <label for="openai-api-key" class="form-label">OpenAI API Key</label>
+                        <input type="text" class="form-control" id="openai-api-key" placeholder="Enter your OpenAI API key">
+                    </div>
+                    <div class="mb-3">
+                        <label for="mcp-server-url" class="form-label">MCP Server URL</label>
+                        <input type="text" class="form-control" id="mcp-server-url" placeholder="Enter your MCP Server URL">
+                    </div>
+                    <hr>
+                    <div class="mb-3">
+                        <label for="system-prompt" class="form-label">System Prompt</label>
+                        <textarea class="form-control" id="system-prompt" rows="3" placeholder="Enter a system prompt for the AI"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="file-upload" class="form-label">Upload Files</label>
+                        <input class="form-control" type="file" id="file-upload" multiple>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="save-ai-config">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- AI Tool Management Modal -->
+    <div class="modal fade" id="aiToolManagementModal" tabindex="-1" aria-labelledby="aiToolManagementModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content bg-dark text-white">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="aiToolManagementModalLabel">Manage AI Tools</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="ai-tools-list">
+                        <!-- AI tools will be loaded here -->
+                    </div>
+                    <hr>
+                    <h6>Add/Edit AI Tool</h6>
+                    <form id="ai-tool-form">
+                        <input type="hidden" id="tool-id">
+                        <div class="mb-3">
+                            <label for="tool-name" class="form-label">Name</label>
+                            <input type="text" class="form-control" id="tool-name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="tool-url" class="form-label">URL</label>
+                            <input type="url" class="form-control" id="tool-url" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="tool-icon" class="form-label">Icon (Font Awesome class)</label>
+                            <input type="text" class="form-control" id="tool-icon" placeholder="e.g., fas fa-robot">
+                        </div>
+                        <div class="mb-3">
+                            <label for="tool-description" class="form-label">Description</label>
+                            <textarea class="form-control" id="tool-description" rows="2"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save Tool</button>
+                        <button type="button" class="btn btn-secondary" id="cancel-edit-tool">Cancel</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Bootstrap core JavaScript-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Custom scripts for all pages-->
+    <!-- Link do Twojego głównego pliku JavaScript -->
+    <script type="module" src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gridstack@10.1.2/dist/gridstack-all.js"></script>
+
+</body>
+</html>

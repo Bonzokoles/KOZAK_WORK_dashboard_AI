@@ -1,0 +1,26 @@
+U:\JIMBODASH\
+├── backend\
+│   ├── __init__.py
+│   ├── requirements.txt
+│   ├── server.py
+│   ├── chatbot.py
+│   ├── weather_integration.py
+│   └── utils\
+│       └── __init__.py
+├── frontend\
+│   ├── static\
+│   │   ├── css\
+│   │   │   ├── style.css
+│   │   │   └── dashboard.css
+│   │   ├── js\
+│   │   │   ├── dashboard.js
+│   │   │   ├── 3d_visualizations.js
+│   │   │   ├── chat.js
+│   │   │   └── weather.js
+│   │   └── img\  (ten katalog może być pusty na początku)
+│   └── templates\
+│       └── dashboard.html
+├── config\
+│   └── config.json
+├── .env
+└── run.py
