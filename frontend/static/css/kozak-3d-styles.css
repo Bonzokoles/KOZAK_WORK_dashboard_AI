@@ -1,0 +1,320 @@
+/* KOZAK 3D Background Canvas Styles */
+#bg-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    pointer-events: none;
+    background: linear-gradient(135deg, 
+        rgba(0, 12, 36, 0.95) 0%, 
+        rgba(0, 24, 72, 0.90) 50%, 
+        rgba(0, 6, 24, 0.95) 100%);
+}
+
+/* Enhanced Glassmorphism Effects */
+.card, .sidebar, .navbar {
+    backdrop-filter: blur(20px);
+    background: rgba(13, 27, 42, 0.7) !important;
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    border-color: rgba(0, 212, 255, 0.4);
+    box-shadow: 
+        0 12px 40px rgba(0, 0, 0, 0.4),
+        0 0 20px rgba(0, 212, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+/* Space-age UI Elements */
+.btn-primary {
+    background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
+    border: none;
+    box-shadow: 0 4px 15px rgba(0, 212, 255, 0.3);
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #00d4ff 0%, #00b8e6 100%);
+    box-shadow: 0 6px 20px rgba(0, 212, 255, 0.5);
+    transform: translateY(-1px);
+}
+
+.form-control, .form-select {
+    background: rgba(0, 30, 60, 0.6) !important;
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    color: #ffffff;
+    backdrop-filter: blur(10px);
+}
+
+.form-control:focus, .form-select:focus {
+    background: rgba(0, 30, 60, 0.8) !important;
+    border-color: #00d4ff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 212, 255, 0.25);
+    color: #ffffff;
+}
+
+/* Enhanced Chat Widget */
+.chat-widget {
+    backdrop-filter: blur(25px);
+    background: rgba(13, 27, 42, 0.85) !important;
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    box-shadow: 
+        0 10px 30px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.chat-header {
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.3) 0%, rgba(157, 78, 221, 0.3) 100%);
+    border-bottom: 1px solid rgba(0, 212, 255, 0.2);
+}
+
+.message {
+    margin: 10px 0;
+    padding: 12px;
+    border-radius: 12px;
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.message.user {
+    background: rgba(0, 212, 255, 0.15);
+    border-color: rgba(0, 212, 255, 0.3);
+    margin-left: 20px;
+}
+
+.message.assistant {
+    background: rgba(157, 78, 221, 0.15);
+    border-color: rgba(157, 78, 221, 0.3);
+    margin-right: 20px;
+}
+
+.message.system {
+    background: rgba(255, 107, 53, 0.15);
+    border-color: rgba(255, 107, 53, 0.3);
+    text-align: center;
+}
+
+.message-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    font-size: 0.8em;
+    opacity: 0.8;
+}
+
+.message-content {
+    line-height: 1.4;
+}
+
+/* Typing indicator animation */
+.typing-dots {
+    display: inline-flex;
+    gap: 4px;
+}
+
+.typing-dots span {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #00d4ff;
+    animation: typing 1.4s infinite ease-in-out both;
+}
+
+.typing-dots span:nth-child(1) { animation-delay: -0.32s; }
+.typing-dots span:nth-child(2) { animation-delay: -0.16s; }
+
+@keyframes typing {
+    0%, 80%, 100% { 
+        transform: scale(0);
+        opacity: 0.5;
+    }
+    40% { 
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Tool badges */
+.tool-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    margin: 2px;
+    background: rgba(0, 212, 255, 0.2);
+    border: 1px solid rgba(0, 212, 255, 0.4);
+    border-radius: 12px;
+    font-size: 0.8em;
+    color: #00d4ff;
+}
+
+/* Sidebar enhancements */
+.sidebar {
+    background: rgba(13, 27, 42, 0.85) !important;
+    border-right: 1px solid rgba(0, 212, 255, 0.2);
+}
+
+.sidebar-menu a {
+    color: rgba(255, 255, 255, 0.8);
+    transition: all 0.3s ease;
+    border-radius: 8px;
+    margin: 2px 10px;
+    backdrop-filter: blur(10px);
+}
+
+.sidebar-menu a:hover, .sidebar-menu a.active {
+    background: rgba(0, 212, 255, 0.15) !important;
+    color: #00d4ff !important;
+    border-left: 3px solid #00d4ff;
+    transform: translateX(5px);
+}
+
+/* Status indicators */
+.badge-success {
+    background: linear-gradient(135deg, #00ff88 0%, #00cc6a 100%);
+    color: #000;
+    text-shadow: none;
+}
+
+.badge-danger {
+    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+}
+
+/* Navbar enhancements */
+.navbar {
+    background: rgba(13, 27, 42, 0.9) !important;
+    border-bottom: 1px solid rgba(0, 212, 255, 0.2);
+}
+
+.navbar h1 {
+    background: linear-gradient(135deg, #00d4ff 0%, #9d4edd 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: bold;
+}
+
+/* Clock display */
+.clock-display {
+    font-family: 'Courier New', monospace;
+    background: rgba(0, 212, 255, 0.1);
+    padding: 5px 10px;
+    border-radius: 8px;
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    color: #00d4ff;
+}
+
+/* Grid stack item enhancements */
+.grid-stack-item-content {
+    backdrop-filter: blur(20px);
+    background: rgba(13, 27, 42, 0.7) !important;
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+.grid-stack-item:hover .grid-stack-item-content {
+    border-color: rgba(0, 212, 255, 0.4);
+    box-shadow: 
+        0 8px 25px rgba(0, 0, 0, 0.3),
+        0 0 15px rgba(0, 212, 255, 0.2);
+}
+
+/* Card header enhancements */
+.card-header {
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.2) 0%, rgba(157, 78, 221, 0.2) 100%);
+    border-bottom: 1px solid rgba(0, 212, 255, 0.3);
+    border-radius: 12px 12px 0 0 !important;
+}
+
+/* Input field enhancements */
+textarea.form-control {
+    min-height: 80px;
+    resize: vertical;
+}
+
+.form-control::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+/* Button group enhancements */
+.btn-outline-secondary {
+    border-color: rgba(255, 255, 255, 0.3);
+    color: rgba(255, 255, 255, 0.8);
+    transition: all 0.3s ease;
+}
+
+.btn-outline-secondary:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.5);
+    color: #ffffff;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .chat-widget {
+        width: 95%;
+        right: 2.5%;
+    }
+    
+    .message.user {
+        margin-left: 10px;
+    }
+    
+    .message.assistant {
+        margin-right: 10px;
+    }
+}
+
+/* Dark scrollbars */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(0, 212, 255, 0.3);
+    border-radius: 4px;
+    transition: background 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 212, 255, 0.5);
+}
+
+/* Loading animations */
+@keyframes pulse-glow {
+    0%, 100% {
+        box-shadow: 0 0 5px rgba(0, 212, 255, 0.3);
+    }
+    50% {
+        box-shadow: 0 0 20px rgba(0, 212, 255, 0.6);
+    }
+}
+
+.generating {
+    animation: pulse-glow 2s infinite;
+}
+
+/* Text selection */
+::selection {
+    background: rgba(0, 212, 255, 0.3);
+    color: #ffffff;
+}
+
+/* Focus states */
+*:focus {
+    outline: none !important;
+    box-shadow: 0 0 0 2px rgba(0, 212, 255, 0.3) !important;
+}
