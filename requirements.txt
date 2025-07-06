@@ -21,3 +21,6 @@ requests==2.28.2
 # Web Interface
 PyQt5==5.15.9
 PyQtWebEngine==5.15.6
+
+# Testing
+pytest==7.4.0

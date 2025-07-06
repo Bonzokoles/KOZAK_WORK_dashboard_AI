@@ -1,137 +1,524 @@
-/* Zresetowanie zaokrągleń i inne zmiany stylistyczne */
-:root {
-    --primary-color: #0ff; /* Zmiana na neonowy odcień */
-    --secondary-color: #aaa;
-    --success-color: #0f0;
-    --danger-color: #f00;
-    --dark-bg: #000;
-    --card-bg: rgba(0, 0, 0, 0.9);
-    --card-header-bg: rgba(0, 0, 0, 0.85);
-    --history-item-bg: rgba(0, 0, 0, 0.7);
-    --ai-tool-card-bg: rgba(0, 0, 0, 0.85);
-    --input-bg: rgba(0, 0, 0, 0.9);
-    --text-color: #fff;
-    --highlight-red: #f0f;
-    --highlight-blue: #0ff;
-    --highlight-purple: #f0f;
-    --neon-glow: 0 0 5px rgba(0, 255, 255, 0.7), 0 0 10px rgba(0, 255, 255, 0.5); /* Inny kolor glow */
-    --input-border: #333;
+/* Dashboard Specific Styles */
+
+/* Chat Widget */
+.chat-widget {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 350px;
+  height: 500px;
+  background: linear-gradient(
+    135deg,
+    rgba(0, 123, 255, 0.9) 0%,
+    rgba(23, 162, 184, 0.9) 100%
+  );
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
+  transition: all 0.3s ease;
 }
 
-body {
-    background-color: #000;
-    color: var(--text-color);
-    font-family: 'Courier New', monospace; /* Zmiana czcionki */
-    overflow-x: hidden;
+.chat-widget.minimized {
+  height: 60px;
 }
 
-/* Usunięcie zaokrągleń */
-.card, .btn, .form-control, .form-select, .history-item {
-    border-radius: 0 !important;
+.chat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.2);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px 12px 0 0;
+  cursor: pointer;
 }
 
-.sidebar {
-    /* ... */
-    border-right: 2px solid var(--highlight-blue); /* Grubsza krawędź */
-    box-shadow: inset -5px 0 15px rgba(0, 0, 0, 0.8); /* Mocniejszy cień */
+.chat-header h6 {
+  margin: 0;
+  color: white;
+  font-weight: 600;
 }
 
-.sidebar-brand {
-    /* ... */
-    border-bottom: 2px solid rgba(0, 255, 255, 0.5); /* Grubsza krawędź */
-    text-shadow: 0 0 10px var(--highlight-blue);
+.chat-body {
+  flex: 1;
+  padding: 1rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
-.sidebar-menu a {
-    /* ... */
-    border-left: 4px solid transparent; /* Grubsza krawędź */
+.chat-widget.minimized .chat-body,
+.chat-widget.minimized .chat-input {
+  display: none;
 }
 
-.sidebar-menu a:hover {
-    border-left-color: var(--highlight-blue);
-    box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+.chat-message {
+  max-width: 80%;
+  padding: 0.75rem;
+  border-radius: 12px;
+  word-wrap: break-word;
+  animation: fadeIn 0.3s ease;
 }
 
-.sidebar-menu a.active {
-    border-left: 4px solid var(--highlight-blue);
-    box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+.chat-message.user {
+  align-self: flex-end;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
 }
 
-.navbar {
-    /* ... */
-    border-bottom: 2px solid var(--highlight-blue);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 1); /* Mocniejszy cień */
+.chat-message.ai {
+  align-self: flex-start;
+  background: rgba(0, 0, 0, 0.2);
+  color: white;
 }
 
-.card {
-    /* ... */
-    border: 2px solid var(--highlight-blue);
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+.chat-input {
+  display: flex;
+  padding: 1rem;
+  gap: 0.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.card:hover {
-    transform: translateY(-7px); /* Większy efekt uniesienia */
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 1), 0 0 0 2px var(--highlight-blue);
+.chat-input input {
+  flex: 1;
+  padding: 0.75rem;
+  border: none;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  outline: none;
 }
 
-.history-item {
-    /* ... */
-    border-left: 4px solid var(--highlight-blue);
-    background-color: rgba(0, 0, 0, 0.8);
-    transition: all 0.2s; /* Szybsze przejście */
+.chat-input input::placeholder {
+  color: rgba(255, 255, 255, 0.7);
 }
 
-.history-item:hover {
-    background-color: rgba(0, 0, 0, 0.95); /* Jeszcze ciemniejsze */
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+.chat-input button {
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.btn-primary {
-    /* ... */
-    border: 2px solid var(--highlight-blue);
+/* Weather Widget Styles */
+.weather-widget {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(
+    135deg,
+    rgba(135, 206, 235, 0.1) 0%,
+    rgba(70, 130, 180, 0.1) 100%
+  );
+  border-radius: 8px;
+  overflow: hidden;
 }
 
-.btn-primary:hover {
-    background-color: #111;
-    border-color: var(--highlight-blue);
-    box-shadow: 0 0 15px rgba(0, 255, 255, 0.7);
+.weather-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.2);
+  border-bottom: 1px solid var(--border-color);
 }
 
-.progress {
-    /* ... */
-    height: 1rem;
-    box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.8);
+.weather-header h3 {
+  margin: 0;
+  color: var(--info-color);
 }
 
-.progress-bar {
-    /* ... */
-    background-image: linear-gradient(to right, var(--highlight-blue), #0ff);
-    box-shadow: 0 0 15px rgba(0, 255, 255, 0.7);
+.weather-controls {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
 }
 
-.progress-bar.bg-success {
-    background-image: linear-gradient(to right, #0f0, #0a0);
-    box-shadow: 0 0 15px rgba(0, 255, 0, 0.7);
+.weather-controls input {
+  padding: 0.25rem 0.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-light);
+  font-size: 0.875rem;
+  width: 120px;
 }
 
-/* ... i tak dalej dla innych elementów ... */
-
-/* Dodatkowe animacje */
-@keyframes neon-pulse {
-    0% { text-shadow: 0 0 10px var(--highlight-blue); }
-    50% { text-shadow: 0 0 20px var(--highlight-blue); }
-    100% { text-shadow: 0 0 10px var(--highlight-blue); }
+.weather-btn {
+  padding: 0.25rem 0.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background: rgba(0, 123, 255, 0.2);
+  color: var(--text-light);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
-.neon-text {
-    animation: neon-pulse 2s infinite;
+.weather-btn:hover {
+  background: rgba(0, 123, 255, 0.4);
 }
 
-@keyframes slide-in {
-    from { transform: translateX(-100%); opacity: 0; }
-    to { transform: translateX(0); opacity: 1; }
+.weather-content {
+  flex: 1;
+  padding: 1rem;
+  overflow-y: auto;
 }
 
-.slide-in {
-    animation: slide-in 0.5s ease-out;
+.weather-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  color: var(--text-muted);
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(255, 255, 255, 0.1);
+  border-left: 4px solid var(--primary-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.weather-main {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.weather-icon-container {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.weather-icon {
+  font-size: 3rem;
+  z-index: 2;
+  position: relative;
+}
+
+.weather-animation {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  z-index: 1;
+}
+
+.weather-info {
+  flex: 1;
+}
+
+.weather-location {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  margin-bottom: 0.5rem;
+}
+
+.weather-temperature {
+  font-size: 2rem;
+  font-weight: bold;
+  color: var(--text-light);
+  margin-bottom: 0.25rem;
+}
+
+.weather-description {
+  color: var(--text-muted);
+  text-transform: capitalize;
+}
+
+.weather-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.weather-detail {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.weather-detail i {
+  color: var(--info-color);
+  width: 16px;
+}
+
+.weather-sun-times {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+}
+
+.sun-time {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.875rem;
+}
+
+.sun-time i.sunrise {
+  color: #ffa500;
+}
+
+.sun-time i.sunset {
+  color: #ff6347;
+}
+
+.movie-quote-section {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.movie-quote {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.movie-quote:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.quote-text {
+  font-style: italic;
+  margin: 0.5rem 0;
+  color: var(--text-light);
+}
+
+.quote-attribution {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-align: right;
+}
+
+.weather-footer {
+  padding: 0.75rem 1rem;
+  background: rgba(0, 0, 0, 0.1);
+  border-top: 1px solid var(--border-color);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.weather-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  color: var(--danger-color);
+  text-align: center;
+}
+
+.weather-error i {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+/* Weather Animations */
+.pulse-animation {
+  animation: pulse 2s infinite;
+}
+
+.float-animation {
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.rain-animation {
+  overflow: hidden;
+}
+
+.rain-drop {
+  position: absolute;
+  width: 2px;
+  height: 10px;
+  background: linear-gradient(to bottom, transparent, #4682b4);
+  animation: rain-fall linear infinite;
+}
+
+@keyframes rain-fall {
+  to {
+    transform: translateY(100px);
+  }
+}
+
+.snow-animation {
+  overflow: hidden;
+}
+
+.snow-flake {
+  position: absolute;
+  color: white;
+  animation: snow-fall linear infinite;
+}
+
+@keyframes snow-fall {
+  to {
+    transform: translateY(100px) rotate(360deg);
+  }
+}
+
+.thunder-animation {
+  position: relative;
+}
+
+.lightning-flash {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.8);
+  animation: lightning 3s infinite;
+}
+
+@keyframes lightning {
+  0%,
+  90%,
+  100% {
+    opacity: 0;
+  }
+  5%,
+  10% {
+    opacity: 1;
+  }
+}
+
+.fog-animation {
+  overflow: hidden;
+}
+
+.fog-cloud {
+  position: absolute;
+  width: 20px;
+  height: 10px;
+  background: rgba(211, 211, 211, 0.6);
+  border-radius: 10px;
+  animation: fog-drift 4s ease-in-out infinite;
+}
+
+@keyframes fog-drift {
+  0%,
+  100% {
+    transform: translateX(-10px);
+  }
+  50% {
+    transform: translateX(10px);
+  }
+}
+
+.quote-fade-in {
+  animation: fadeIn 1s ease;
+}
+
+/* Modal Overrides */
+.modal-content.bg-dark {
+  background-color: var(--bg-dark) !important;
+  border: 1px solid var(--border-color);
+}
+
+.modal-header {
+  border-bottom: 1px solid var(--border-color);
+}
+
+.modal-footer {
+  border-top: 1px solid var(--border-color);
+}
+
+.form-control {
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-color);
+  color: var(--text-light);
+}
+
+.form-control:focus {
+  background-color: rgba(255, 255, 255, 0.15);
+  border-color: var(--primary-color);
+  color: var(--text-light);
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.form-select {
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-color);
+  color: var(--text-light);
+}
+
+/* Button Overrides */
+.btn-outline-secondary {
+  border-color: var(--border-color);
+  color: var(--text-light);
+}
+
+.btn-outline-secondary:hover {
+  background-color: var(--secondary-color);
+  border-color: var(--secondary-color);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .chat-widget {
+    width: 300px;
+    height: 400px;
+    bottom: 10px;
+    right: 10px;
+  }
+
+  .weather-details {
+    grid-template-columns: 1fr;
+  }
+
+  .weather-main {
+    flex-direction: column;
+    text-align: center;
+  }
 }

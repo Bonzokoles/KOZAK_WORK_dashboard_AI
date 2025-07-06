@@ -1,0 +1,21 @@
+{
+  "api_keys": {
+    "ollama": "YOUR_OLLAMA_API_KEY",
+    "openai": "YOUR_OPENAI_API_KEY"
+  },
+  "server": {
+    "mcp_url": "http://localhost:3000"
+  },
+  "ai_settings": {
+    "system_prompt": "You are a helpful AI assistant for the JIMBO Dashboard. You can help with system monitoring, weather information, and general questions. Respond in Polish when the user writes in Polish.",
+    "models": {
+      "default": "ollama:llama3.2:latest",
+      "language": {
+        "polish": "ollama:bielik:7b"
+      },
+      "code": "ollama:codellama:7b"
+    },
+    "model_path": ""
+  },
+  "file_paths": []
+}

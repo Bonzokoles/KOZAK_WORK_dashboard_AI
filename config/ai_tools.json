@@ -1,14 +1,42 @@
-[
+{
+  "version": "1.1.0",
+  "tools": [
     {
-        "name": "Claude",
-        "url": "https://claude.ai",
-        "icon": "fas fa-robot",
-        "description": "AI Assistant by Anthropic"
+      "id": "chat-gpt",
+      "name": "ChatGPT",
+      "url": "https://chat.openai.com",
+      "category": "AI Assistant",
+      "icon": "fas fa-robot",
+      "description": "Advanced conversational AI for task assistance and knowledge exploration.",
+      "tags": ["OpenAI", "Conversational"]
     },
     {
-        "name": "ChatGPT",
-        "url": "https://chat.openai.com",
-        "icon": "fas fa-brain",
-        "description": "AI Chatbot by OpenAI"
+      "id": "claude",
+      "name": "Claude",
+      "url": "https://claude.ai",
+      "category": "AI Assistant",
+      "icon": "fas fa-brain",
+      "description": "A family of foundational AI models for a wide range of conversational and text-processing tasks.",
+      "tags": ["Anthropic", "Conversational", "Text Processing"]
+    },
+    {
+      "id": "perplexity-ai",
+      "name": "Perplexity",
+      "url": "https://perplexity.ai",
+      "category": "Research",
+      "icon": "fas fa-search",
+      "description": "An AI-powered search engine for discovering and sharing knowledge.",
+      "tags": ["Search", "Research"]
+    },
+    {
+      "id": "ollama-web-ui",
+      "name": "Ollama Web UI",
+      "url": "${OLLAMA_WEB_UI_URL}",
+      "category": "Local AI",
+      "icon": "fas fa-server",
+      "description": "A local web interface for running and managing large language models via Ollama.",
+      "tags": ["Ollama", "LLM", "Local Development"],
+      "is_local": true
     }
-]
+  ]
+}

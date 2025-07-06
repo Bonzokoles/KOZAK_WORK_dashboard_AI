@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema#",
+  "$defs": {
+    "tool": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "description": "A unique identifier for the tool (e.g., 'my-tool-name').",
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+        },
+        "name": {
+          "description": "The display name of the tool.",
+          "type": "string",
+          "minLength": 1
+        },
+        "url": {
+          "description": "The URL to access the tool. Can use environment variable substitution (e.g., ${MY_VAR}).",
+          "type": "string",
+          "format": "uri"
+        },
+        "category": {
+          "description": "The primary category of the tool.",
+          "type": "string",
+          "enum": ["AI Assistant", "Research", "Local AI", "Development"]
+        },
+        "icon": {
+          "description": "The CSS class for the tool's icon (e.g., from Font Awesome).",
+          "type": "string",
+          "pattern": "^(fa|fas|far|fal|fab) fa-[a-z0-9-]+$"
+        },
+        "description": {
+          "description": "A brief description of the tool.",
+          "type": "string"
+        },
+        "tags": {
+          "description": "A list of tags for categorizing the tool.",
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        },
+        "enabled": {
+          "description": "Whether the tool is currently enabled.",
+          "type": "boolean",
+          "default": true
+        },
+        "is_local": {
+          "description": "Specifies if the tool is hosted locally.",
+          "type": "boolean",
+          "default": false
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "url",
+        "category"
+      ]
+    }
+  },
+  "title": "AI Tools Configuration Schema",
+  "description": "Defines the structure for the ai_tools.json configuration file.",
+  "type": "object",
+  "properties": {
+    "version": {
+      "description": "The semantic version of the configuration file.",
+      "type": "string",
+      "pattern": "^(0|[1-9]\\\\d*)\\\\.(0|[1-9]\\\\d*)\\\\.(0|[1-9]\\\\d*)(?:-((?:0|[1-9]\\\\d*|\\\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\\\.(?:0|[1-9]\\\\d*|\\\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\\\+([0-9a-zA-Z-]+(?:\\\\.[0-9a-zA-Z-]+)*))?$"
+    },
+    "tools": {
+      "description": "A list of AI tools available in the application.",
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/tool"
+      },
+      "minItems": 1
+    }
+  },
+  "required": ["version", "tools"]
+}
