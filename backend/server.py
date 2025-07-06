@@ -18,6 +18,8 @@ from functools import wraps
 from components.ai_tools.cloudflare_ai import CloudflareAI
 import logging
 
+from backend.routes.chat import chat_bp
+
 # Load environment variables
 load_dotenv()
 
@@ -31,6 +33,9 @@ app = Flask(
     static_folder="../frontend/static",
 )
 CORS(app)
+
+# Register blueprints
+app.register_blueprint(chat_bp)
 
 
 # Standard API response wrapper

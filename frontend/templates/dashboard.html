@@ -11,6 +11,7 @@
     <!-- Custom styles -->
     <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
     <link href="{{ url_for('static', filename='css/dashboard.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/kozak-chat.css') }}" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/gridstack@10.1.2/dist/gridstack.min.css" rel="stylesheet"/>
     <script type="importmap">
     {
@@ -148,10 +149,37 @@
         </div>
     </div>
 
-    <!-- Chatbot Widget -->
-    <div class="chat-widget" id="chat-widget">
+    <!-- KOZAK Tools Panel -->
+    <div class="kozak-tools-section" id="kozak-tools-container">
+        <div class="kozak-tools-header">
+            <button class="kozak-tools-toggle" id="kozak-tools-toggle">
+                <i class="fas fa-tools"></i> Narzędzia ▼ (10/10)
+            </button>
+        </div>
+        
+        <div class="kozak-tools-content">
+            <div class="kozak-tools-controls">
+                <div class="text-muted">
+                    <small>Wybierz narzędzia dostępne dla AI</small>
+                </div>
+                <button class="kozak-select-all-tools" id="kozak-select-all-tools">
+                    Odznacz wszystkie
+                </button>
+            </div>
+            
+            <div class="kozak-tools-list" id="kozak-tools-list">
+                <!-- Tools will be loaded dynamically -->
+                <div class="text-center text-muted p-3">
+                    <i class="fas fa-spinner fa-spin"></i> Ładowanie narzędzi...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chatbot Widget (legacy - można usunąć) -->
+    <div class="chat-widget" id="chat-widget" style="display: none;">
         <div class="chat-header">
-            <h6>AI Assistant</h6>
+            <h6>AI Assistant (Legacy)</h6>
             <button class="btn btn-sm btn-link text-white" id="minimize-chat">
                 <i class="fas fa-minus"></i>
             </button>
@@ -286,5 +314,88 @@
     <script type="module" src="{{ url_for('static', filename='js/main.js') }}?v={{ range(1, 100000) | random }}"></script>
     <!-- Cloudflare AI Script -->
     <script src="{{ url_for('static', filename='js/cloudflare-ai.js') }}"></script>
+    <!-- KOZAK Chat with Function Calling -->
+    <script src="{{ url_for('static', filename='js/kozak-chat.js') }}"></script>
 </body>
 </html>
+    <!-- KOZAK Statistics Modal -->
+    <div class="modal fade" id="kozakStatsModal" tabindex="-1" aria-labelledby="kozakStatsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content bg-dark text-white">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="kozakStatsModalLabel">
+                        <i class="fas fa-chart-bar"></i> KOZAK AI Statystyki
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card bg-secondary">
+                                <div class="card-body">
+                                    <h6 class="card-title">
+                                        <i class="fas fa-comments"></i> Konwersacje
+                                    </h6>
+                                    <div class="d-flex justify-content-between">
+                                        <span>Wiadomości:</span>
+                                        <span id="stats-messages">0</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between">
+                                        <span>Sesje:</span>
+                                        <span id="stats-sessions">1</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card bg-secondary">
+                                <div class="card-body">
+                                    <h6 class="card-title">
+                                        <i class="fas fa-tools"></i> Narzędzia
+                                    </h6>
+                                    <div class="d-flex justify-content-between">
+                                        <span>Użyte:</span>
+                                        <span id="stats-tools-used">0</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between">
+                                        <span>Dostępne:</span>
+                                        <span id="stats-tools-available">10</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <h6><i class="fas fa-history"></i> Ostatnie narzędzia</h6>
+                        <div id="stats-recent-tools" class="list-group">
+                            <div class="list-group-item bg-secondary text-muted text-center">
+                                Brak użytych narzędzi
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <h6><i class="fas fa-download"></i> Eksport konwersacji</h6>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-outline-light btn-sm" id="export-json">
+                                <i class="fas fa-file-code"></i> JSON
+                            </button>
+                            <button class="btn btn-outline-light btn-sm" id="export-txt">
+                                <i class="fas fa-file-alt"></i> TXT
+                            </button>
+                            <button class="btn btn-outline-light btn-sm" id="export-md">
+                                <i class="fas fa-file-markdown"></i> Markdown
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zamknij</button>
+                    <button type="button" class="btn btn-danger" id="reset-stats">
+                        <i class="fas fa-trash"></i> Resetuj statystyki
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
