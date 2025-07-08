@@ -3,71 +3,214 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { dashboardWidgets } from '../config.js';
 
+const BACKEND_URL = window.location.origin || "http://localhost:5000";
+
+// Widget configurations
+export const widgets = [
+  {
+    id: "system-info",
+    title: "System Info",
+    content: '<div class="widget-content" id="system-info-content"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></div>',
+    w: 2,
+    h: 2,
+    x: 0,
+    y: 0
+  },
+  {
+    id: "system-resources",
+    title: "System Resources",
+    content: '<div class="widget-content" id="system-resources-content"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></div>',
+    w: 4,
+    h: 4,
+    x: 2,
+    y: 0
+  },
+  {
+    id: "network-stats",
+    title: "Network Stats",
+    content: '<div class="widget-content" id="network-stats-content"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></div>',
+    w: 3,
+    h: 3,
+    x: 6,
+    y: 0
+  },
+  {
+    id: "top-processes",
+    title: "Top Processes",
+    content: '<div class="widget-content" id="top-processes-content"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></div>',
+    w: 3,
+    h: 5,
+    x: 6,
+    y: 3
+  },
+  {
+    id: "weather",
+    title: "Weather",
+    content: '<div class="widget-content" id="weather-content"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></div>',
+    w: 2,
+    h: 3,
+    x: 0,
+    y: 2
+  },
+  {
+    id: "3d-viewer",
+    title: "3D Model Viewer",
+    content: '<div class="widget-content" id="3d-viewer-content" style="height: calc(100% - 50px);"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></div><div class="mt-2"><input type="text" class="form-control" id="3d-model-path" placeholder="Path to .glb model"><button class="btn btn-primary btn-sm mt-2" id="load-3d-model-btn">Load Model</button></div>',
+    w: 6,
+    h: 8,
+    x: 0,
+    y: 5
+  },
+];
+
+// Create a widget element
+function createWidgetElement(widget) {
+  const widgetEl = document.createElement('div');
+  widgetEl.className = 'grid-stack-item';
+  widgetEl.setAttribute('gs-w', widget.w);
+  widgetEl.setAttribute('gs-h', widget.h);
+  if (widget.x !== undefined) widgetEl.setAttribute('gs-x', widget.x);
+  if (widget.y !== undefined) widgetEl.setAttribute('gs-y', widget.y);
+  
+  widgetEl.innerHTML = `
+    <div class="widget">
+      <div class="widget-header">
+        <h5>${widget.title || widget.id.replace(/-/g, ' ')}</h5>
+        <div class="widget-actions">
+          <button class="btn btn-sm btn-link text-white refresh-widget" data-widget="${widget.id}" title="Refresh">
+            <i class="fas fa-sync-alt"></i>
+          </button>
+        </div>
+      </div>
+      <div class="widget-body">
+        ${widget.content}
+      </div>
+    </div>
+  `;
+  return widgetEl;
+}
 
 export function loadWidgets(grid) {
-  dashboardWidgets.forEach((widget) => {
-    grid.addWidget({
-      id: widget.id,
-      w: widget.w,
-      h: widget.h,
-      content: `
-                <div class="window">
-                    <div class="window-header">
-                        <span class="window-title">${widget.id.replace(
-                          "-",
-                          " "
-                        )}</span>
-                        <div class="window-controls">
-                            <button class="window-btn minimize"></button>
-                            <button class="window-btn maximize"></button>
-                            <button class="window-btn close"></button>
-                        </div>
-                    </div>
-                    <div class="window-content">
-                        ${widget.content}
-                    </div>
-                </div>
-            `,
+  // Clear existing widgets
+  grid.removeAll();
+  
+  // Add each widget to the grid
+  widgets.forEach(widget => {
+    const widgetEl = createWidgetElement(widget);
+    grid.addWidget(widgetEl);
+  });
+  
+  // Add event listeners for refresh buttons
+  document.querySelectorAll('.refresh-widget').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const widgetId = e.target.closest('.refresh-widget').dataset.widget;
+      updateWidget(widgetId);
     });
   });
+  
+  console.log('Widgets loaded successfully');
+}
+
+// Update a specific widget by ID
+function updateWidget(widgetId) {
+  switch(widgetId) {
+    case 'system-info':
+      return updateSystemInfo();
+    case 'system-resources':
+      return updateSystemResources();
+    case 'network-stats':
+      return updateNetworkStats();
+    case 'top-processes':
+      return updateTopProcesses();
+    case 'weather':
+      return updateWeather();
+    case '3d-viewer':
+      // 3D viewer is updated on user interaction
+      return Promise.resolve();
+    default:
+      console.warn(`Unknown widget ID: ${widgetId}`);
+      return Promise.resolve();
+  }
 }
 
 export function updateWidgets() {
-  updateSystemInfo();
-  updateSystemResources();
-  updateNetworkStats();
-  updateTopProcesses();
-  updateWeather();
+  // Update all widgets in parallel
+  return Promise.all([
+    updateSystemInfo(),
+    updateSystemResources(),
+    updateNetworkStats(),
+    updateTopProcesses(),
+    updateWeather()
+  ]).catch(error => {
+    console.error('Error updating widgets:', error);
+  });
+}
+
+// Format uptime from seconds to human readable format
+function formatUptime(seconds) {
+  if (!seconds) return 'N/A';
+  
+  const days = Math.floor(seconds / 86400);
+  const hours = Math.floor((seconds % 86400) / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  
+  const parts = [];
+  if (days > 0) parts.push(`${days}d`);
+  if (hours > 0 || days > 0) parts.push(`${hours}h`);
+  parts.push(`${minutes}m`);
+  
+  return parts.join(' ');
 }
 
 function updateSystemInfo() {
-  console.log("Attempting to fetch /api/system/info");
-  fetch(`/api/system/info`)
-    .then((response) => {
-        console.log("Received response for /api/system/info:", response);
-        return response.json();
+  const contentEl = document.getElementById('system-info-content');
+  if (!contentEl) return Promise.resolve();
+  
+  // Show loading state
+  contentEl.innerHTML = '<div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div>';
+  
+  return fetch(`${BACKEND_URL}/api/system/info`)
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json();
     })
-    .then((response) => {
-      if (response.success) {
-        const data = response.data;
-        const content = `
-                  <p><strong>Hostname:</strong> ${data.hostname}</p>
-                  <p><strong>OS:</strong> ${data.os}</p>
-                  <p><strong>Uptime:</strong> ${new Date(data.uptime * 1000)
-                    .toISOString()
-                    .substr(11, 8)}</p>
-              `;
-        document.getElementById("system-info-content").innerHTML = content;
+    .then(data => {
+      if (data && data.success && data.data) {
+        const sysInfo = data.data;
+        contentEl.innerHTML = `
+          <div class="system-info">
+            <div class="info-row">
+              <span class="info-label">OS:</span>
+              <span class="info-value">${sysInfo.os || 'N/A'}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Hostname:</span>
+              <span class="info-value">${sysInfo.hostname || 'N/A'}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Uptime:</span>
+              <span class="info-value">${formatUptime(sysInfo.uptime)}</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">Python:</span>
+              <span class="info-value">${sysInfo.python || 'N/A'}</span>
+            </div>
+          </div>
+        `;
       } else {
-        console.error("Error fetching system info:", response.error);
-        document.getElementById("system-info-content").innerHTML =
-          "<p>Error loading data.</p>";
+        throw new Error('Invalid response format');
       }
     })
-    .catch((error) => {
-      console.error("Error fetching system info:", error);
-      document.getElementById("system-info-content").innerHTML =
-        "<p>Error loading data.</p>";
+    .catch(error => {
+      console.error('Error updating system info:', error);
+      contentEl.innerHTML = `
+        <div class="alert alert-danger">
+          <i class="fas fa-exclamation-triangle"></i>
+          Failed to load system info: ${error.message}
+        </div>
+      `;
     });
 }
 

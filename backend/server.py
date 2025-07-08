@@ -19,6 +19,9 @@ from components.ai_tools.cloudflare_ai import CloudflareAI
 import logging
 
 from backend.routes.chat import chat_bp
+from backend.routes.system import system_bp
+from backend.routes.weather import weather_bp
+from backend.routes.ai import ai_bp
 
 # Load environment variables
 load_dotenv()
@@ -36,6 +39,9 @@ CORS(app)
 
 # Register blueprints
 app.register_blueprint(chat_bp)
+app.register_blueprint(system_bp, url_prefix='/api')
+app.register_blueprint(weather_bp, url_prefix='/api')
+app.register_blueprint(ai_bp, url_prefix='/api/ai')
 
 
 # Standard API response wrapper

@@ -1,3 +1,139 @@
+/* Dashboard Grid Layout */
+.grid-stack {
+  background: transparent;
+  min-height: 100vh;
+  padding: 1rem;
+}
+
+/* Widget Styling */
+.widget {
+  background: rgba(30, 30, 45, 0.8);
+  border: 1px solid rgba(0, 255, 255, 0.2);
+  border-radius: 8px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.widget:hover {
+  border-color: rgba(0, 255, 255, 0.5);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.widget-header {
+  padding: 0.75rem 1rem;
+  background: rgba(0, 0, 0, 0.2);
+  border-bottom: 1px solid rgba(0, 255, 255, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.widget-header h5 {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #00ffff;
+  text-transform: capitalize;
+}
+
+.widget-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.widget-body {
+  flex: 1;
+  padding: 1rem;
+  overflow: auto;
+}
+
+/* System Info Widget */
+.system-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.25rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.info-label {
+  font-weight: 500;
+  color: #8e9aaf;
+}
+
+.info-value {
+  color: #e0e0e0;
+  font-family: 'Courier New', monospace;
+}
+
+/* Loading States */
+.widget .spinner-border {
+  width: 1.5rem;
+  height: 1.5rem;
+  border-width: 0.15em;
+  margin: 1rem auto;
+  display: block;
+}
+
+/* Error States */
+.alert {
+  padding: 0.75rem 1rem;
+  margin: 0;
+  border-radius: 4px;
+  font-size: 0.85rem;
+}
+
+.alert-danger {
+  background-color: rgba(220, 53, 69, 0.2);
+  border: 1px solid rgba(220, 53, 69, 0.3);
+  color: #ff6b6b;
+}
+
+/* Refresh Button */
+.refresh-widget {
+  padding: 0.25rem;
+  line-height: 1;
+  opacity: 0.7;
+  transition: opacity 0.2s, transform 0.2s;
+  background: none;
+  border: none;
+  color: #00ffff;
+  cursor: pointer;
+}
+
+.refresh-widget:hover {
+  opacity: 1;
+  transform: rotate(90deg);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .grid-stack {
+    padding: 0.5rem;
+  }
+  
+  .widget {
+    margin-bottom: 0.5rem;
+  }
+  
+  .widget-header h5 {
+    font-size: 0.8rem;
+  }
+  
+  .widget-body {
+    padding: 0.75rem;
+  }
+}
+
 /* Dashboard Specific Styles */
 
 /* Chat Widget */

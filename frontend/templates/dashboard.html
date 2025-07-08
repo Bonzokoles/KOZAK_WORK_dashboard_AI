@@ -309,15 +309,65 @@
     <!-- Bootstrap core JavaScript-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Custom scripts for all pages-->
-    <!-- Link do Twojego głównego pliku JavaScript -->
-    <script type="module" src="{{ url_for('static', filename='js/main.js') }}?v={{ range(1, 100000) | random }}"></script>
-    <!-- Cloudflare AI Script -->
-    <script src="{{ url_for('static', filename='js/cloudflare-ai.js') }}"></script>
-    <!-- KOZAK Chat with Function Calling -->
+    <!-- Three.js and GridStack Dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gridstack@7.2.3/dist/gridstack-all.js"></script>
+
+    <!-- Custom Scripts -->
+    <script src="{{ url_for('static', filename='js/background.js') }}"></script>
+    <script type="module">
+        // Define the module URL
+        const dashboardModuleUrl = new URL("{{ url_for('static', filename='js/dashboard.js') }}", window.location.origin).href;
+        
+        // Dynamic import with error handling
+        import(dashboardModuleUrl)
+            .then(module => {
+                window.loadWidgets = module.loadWidgets;
+                window.updateWidgets = module.updateWidgets;
+                
+                // Initialize the grid when DOM is fully loaded
+                document.addEventListener('DOMContentLoaded', () => {
+                    const grid = GridStack.init({
+                        float: true,
+                        cellHeight: '80px',
+                        minRow: 1,
+                        disableResize: false,
+                        disableDrag: false,
+                        margin: 10,
+                        columnOpts: { width: 200, layout: 'move' },
+                        acceptWidgets: true
+                    });
+
+                    // Load widgets into the grid
+                    window.loadWidgets(grid);
+
+                    // Update widgets every 5 seconds
+                    setInterval(window.updateWidgets, 5000);
+                    
+                    // Initial update
+                    window.updateWidgets();
+                    
+                    // Make grid available globally for debugging
+                    window.grid = grid;
+                });
+            })
+            .catch(err => {
+                console.error('Failed to load dashboard module:', err);
+                // Show error message to user
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'alert alert-danger m-3';
+                errorDiv.textContent = 'Failed to load dashboard. Please check console for errors.';
+                document.body.prepend(errorDiv);
+            });
+        
+
+    </script>
+    
+    <!-- KOZAK Chat -->
     <script src="{{ url_for('static', filename='js/kozak-chat.js') }}"></script>
-</body>
-</html>
+
     <!-- KOZAK Statistics Modal -->
     <div class="modal fade" id="kozakStatsModal" tabindex="-1" aria-labelledby="kozakStatsModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">

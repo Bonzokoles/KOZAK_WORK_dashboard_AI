@@ -1,6 +1,10 @@
-const BACKEND_URL = "http://localhost:5000";
+const BACKEND_URL = window.location.origin || "http://localhost:5000";
 let grid;
 
+// Export functions for module usage
+export { loadWidgets, updateWidgets };
+
+// Initialize when DOM is loaded
 document.addEventListener("DOMContentLoaded", function () {
   // Initialize 3D Background
   const visualizer = new window.DataVisualizer("bg-canvas");
@@ -150,7 +154,7 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
-function loadWidgets() {
+export function loadWidgets() {
   widgets.forEach((widget) => {
     grid.addWidget({
       id: widget.id,
@@ -180,7 +184,7 @@ function loadWidgets() {
   setupWindowControls();
 }
 
-function updateWidgets() {
+export function updateWidgets() {
   updateSystemInfo();
   updateSystemResources();
   updateNetworkStats();
